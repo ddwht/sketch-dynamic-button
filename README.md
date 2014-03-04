@@ -3,7 +3,7 @@ sketch-dynamic-button
 
 # Dynamic button plugin for Sketch.app
 
-Dynamic button plug-in for [Sketch.app](http://bohemiancoding.com/sketch/) allows to create buttons with fixed margins no matter what text you add. 
+Dynamic button plug-in for [Sketch.app](http://bohemiancoding.com/sketch/) allows to create buttons with fixed paddings no matter what text you add. 
 
 ## Demo
 
@@ -23,13 +23,13 @@ You can firstly create a structure (like on the image bellow) manually and then 
 
 <img src="https://dl.dropboxusercontent.com/u/1909742/sketch-plugin/2step.png"/>
 
-0:0:0:0 are margins. The syntax is like CSS margins.
+0:0:0:0 are padings. The syntax is like CSS paddings.
 
 *For e.g. 
-margin: 10px 20px 10px 20px (margin: top right bottom left)
+padding: 10px 20px 10px 20px (padding: top right bottom left)
 10:20:10:20 (top:right:bottom:left)*
 
-Make the margins you need (in text layer name), select text layer and press `Cmd + J`.
+Make the paddings you need (in text layer name), select text layer and press `Cmd + J`.
 
 <img src="https://dl.dropboxusercontent.com/u/1909742/sketch-plugin/3step.png"/>
 
