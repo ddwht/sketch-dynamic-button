@@ -55,6 +55,8 @@ choose "Open Plugins Folder".
 [Scripting documentation](http://bohemiancoding.com/sketch/scripting/)
 
 
+[Twitter](https://twitter.com/dwht)
+[Facebook](https://www.facebook.com/alexander.kudymov)
 
 
 
