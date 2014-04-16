@@ -33,16 +33,30 @@ var splitLayer = [layer name].split(':');
 
 var offsetTop,offsetRight,offsetRight,offsetLeft;
 
-if (splitLayer.length !== 4) {
-	layer.name = "0:0:0:0";
-	splitLayer = [layer name].split(':');
-}
-
-offsetTop = parseInt(splitLayer[0]);
-offsetRight = parseInt(splitLayer[1]);
-offsetBottom = parseInt(splitLayer[2]);
-offsetLeft = parseInt(splitLayer[3]);
 if(!is_group(layer)){
+	switch(splitLayer.length){
+		case 1:
+			offsetTop = offsetRight = offsetBottom = offsetLeft = parseInt(splitLayer[0]) || 0;
+			break;
+		case 2:
+			offsetTop = offsetBottom = parseInt(splitLayer[0]) || 0;
+			offsetRight = offsetLeft = parseInt(splitLayer[1]) || 0;
+			break;
+		case 3:
+			offsetTop = parseInt(splitLayer[0]) || 0;
+			offsetRight = offsetLeft = parseInt(splitLayer[1]) || 0;
+			offsetBottom = parseInt(splitLayer[2]) || 0;
+			break;
+		case 4:
+			offsetTop = parseInt(splitLayer[0]) || 0;
+			offsetRight = parseInt(splitLayer[1]) || 0;
+			offsetBottom = parseInt(splitLayer[2]) || 0;
+			offsetLeft = parseInt(splitLayer[3]) || 0;
+			break;
+		default:
+			layer.name = "0:0:0:0";
+			offsetTop = offsetRight = offsetBottom = offsetLeft = 0;
+	}
 
 
 
