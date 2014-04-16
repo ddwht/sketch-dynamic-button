@@ -75,14 +75,13 @@ if(!is_group(layer)){
 		newGroup.name = "flex button";
 		var newRect = [newGroup addLayerOfType:'rectangle']
 		newRect.name = "BG";
+		[[newRect frame] setHeight:(layerHeight + offsetTop + offsetBottom)];
+		[[newRect frame] setWidth:(layerWidth + offsetLeft + offsetRight)];
+		[[newRect frame] setX: layerX - offsetLeft];
+		[[newRect frame] setY: layerY - offsetTop];
 
 		var style = [[newRect style] fills];
 		style.addNewStylePart();
-
-	[[newRect frame] setHeight:layerHeight]; 
-	[[newRect frame] setWidth:layerWidth];
-	[[newRect frame] setX: layerX];
-	[[newRect frame] setY: layerY];
 
 		newLayer = [layer duplicate];
 		[parentGroup removeLayer:newLayer];
