@@ -23,17 +23,18 @@ function isLayerInGroup(name,group) {
 }
 
 var layer = selection[0];
-var layerHeight = [[layer frame] height];
-var layerWidth = [[layer frame] width];
-var layerX = [[layer frame] x];
-var layerY = [[layer frame] y];
-
-var splitLayer = [];
-var splitLayer = [layer name].split(':');
-
-var offsetTop,offsetRight,offsetRight,offsetLeft;
 
 if(!is_group(layer)){
+	var layerHeight = [[layer frame] height];
+	var layerWidth = [[layer frame] width];
+	var layerX = [[layer frame] x];
+	var layerY = [[layer frame] y];
+
+	var splitLayer = [];
+	var splitLayer = [layer name].split(':');
+
+	var offsetTop,offsetRight,offsetRight,offsetLeft;
+
 	switch(splitLayer.length){
 		case 1:
 			offsetTop = offsetRight = offsetBottom = offsetLeft = parseInt(splitLayer[0]) || 0;
@@ -58,36 +59,34 @@ if(!is_group(layer)){
 			offsetTop = offsetRight = offsetBottom = offsetLeft = 0;
 	}
 
+	var parentGroup = [layer parentGroup];
 
+	var BG = isLayerInGroup("BG", parentGroup);
+	if (BG) {
+		[[BG frame] setHeight:(layerHeight + offsetTop + offsetBottom)];
+		[[BG frame] setWidth:(layerWidth + offsetLeft + offsetRight)];
+		[[BG frame] setX: 0];
+		[[BG frame] setY: 0];
+		[[layer frame] setX: offsetLeft];
+		[[layer frame] setY: offsetTop];
+	}
+	else {
+		var newGroup = [parentGroup addLayerOfType:'group'];
+		newGroup.name = "flex button";
+		var newRect = [newGroup addLayerOfType:'rectangle']
+		newRect.name = "BG";
 
+		var style = [[newRect style] fills];
+		style.addNewStylePart();
 
-var parentGroup = [layer parentGroup];
-
-if (BG) {
-	[[BG frame] setHeight:(layerHeight + offsetTop +offsetBottom)];
-	[[BG frame] setWidth:(layerWidth + offsetLeft + offsetRight)];
-	[[BG frame] setX: 0];
-	[[BG frame] setY: 0];
-	[[layer frame] setX: offsetLeft];
-	[[layer frame] setY: offsetTop];
-}
-else {
-	var newGroup = [parentGroup addLayerOfType:'group'];
-	newGroup.name = "flex button";
-
-	var newRect = [newGroup addLayerOfType:'rectangle']
-	newRect.name = "BG";
 	[[newRect frame] setHeight:layerHeight]; 
 	[[newRect frame] setWidth:layerWidth];
 	[[newRect frame] setX: layerX];
 	[[newRect frame] setY: layerY];
 
-	var style = [[newRect style] fills];
-	style.addNewStylePart();
-
-	newLayer = [layer duplicate];
-	[parentGroup removeLayer:newLayer];
-	[newGroup addLayer: newLayer];
-	[parentGroup removeLayer: layer];
+		newLayer = [layer duplicate];
+		[parentGroup removeLayer:newLayer];
+		[newGroup addLayer: newLayer];
+		[parentGroup removeLayer: layer];
 	}
 }
