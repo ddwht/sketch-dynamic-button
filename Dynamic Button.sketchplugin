@@ -11,14 +11,15 @@ function is_group(layer) {
 }
 
 function isLayerInGroup(name,group) {
-var BGlayer;
-for (var i=0; i<groupLayers.length(); i++) {
-	var layer = groupLayers[i];
-	if ([layer name] == name) {
-			BGlayer = layer;
+	var BGlayer;
+	var groupLayers = [group layers];
+	for (var i=0; i<groupLayers.length(); i++) {
+		var layer = groupLayers[i];
+		if ([layer name] == name) {
+				BGlayer = layer;
+			}
 		}
-	}
-return BGlayer;
+	return BGlayer;
 }
 
 var layer = selection[0];
@@ -47,9 +48,7 @@ if(!is_group(layer)){
 
 
 var parentGroup = [layer parentGroup];
-var groupLayers = [parentGroup layers];
 
-var BG = isLayerInGroup("BG",parentGroup);
 if (BG) {
 	[[BG frame] setHeight:(layerHeight + offsetTop +offsetBottom)];
 	[[BG frame] setWidth:(layerWidth + offsetLeft + offsetRight)];
