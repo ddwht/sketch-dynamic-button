@@ -1,9 +1,10 @@
 // just a comment (cmd j)
 
 function alert(msg, title) {
-  title = title || "alert";
-  var app = [NSApplication sharedApplication];
-  [app displayDialog:msg withTitle:title];
+	title = title || "alert";
+	var app = [NSApplication sharedApplication];
+	[app displayDialog:msg withTitle:title];
+}
 }
 
 function isLayerInGroup(name,group) {
