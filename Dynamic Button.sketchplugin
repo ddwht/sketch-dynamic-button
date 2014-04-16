@@ -5,6 +5,9 @@ function alert(msg, title) {
 	var app = [NSApplication sharedApplication];
 	[app displayDialog:msg withTitle:title];
 }
+
+function is_group(layer) {
+	return [layer isMemberOfClass:[MSLayerGroup class]];
 }
 
 function isLayerInGroup(name,group) {
@@ -38,6 +41,7 @@ offsetTop = parseInt(splitLayer[0]);
 offsetRight = parseInt(splitLayer[1]);
 offsetBottom = parseInt(splitLayer[2]);
 offsetLeft = parseInt(splitLayer[3]);
+if(!is_group(layer)){
 
 
 
@@ -72,4 +76,5 @@ else {
 	[parentGroup removeLayer:newLayer];
 	[newGroup addLayer: newLayer];
 	[parentGroup removeLayer: layer];
+	}
 }
