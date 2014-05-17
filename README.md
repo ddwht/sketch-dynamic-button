@@ -1,6 +1,10 @@
 sketch-dynamic-button
 =====================
 
+#中文教程
+
+[中文教程](http://hicc.me/post/sketch-dynamic-button-and-bug-fix.html)
+
 # Dynamic button plugin for Sketch.app
 
 Dynamic button plug-in for [Sketch.app](http://bohemiancoding.com/sketch/) allows to create buttons with fixed paddings no matter what text you add. 

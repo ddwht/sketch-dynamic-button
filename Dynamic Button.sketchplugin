@@ -8,8 +8,8 @@ function alert(msg, title) {
 
 function isLayerInGroup(name,group) {
 var BGlayer;
-for (var i=0; i<groupLayers.length(); i++) {
-	var layer = groupLayers[i];
+for (var i=0; i<groupLayers.array().length(); i++) {
+	var layer = groupLayers.array()[i];
 	if ([layer name] == name) {
 			BGlayer = layer;
 		}
