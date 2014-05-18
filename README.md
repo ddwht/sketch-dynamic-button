@@ -5,6 +5,18 @@ sketch-dynamic-button
 
 Dynamic button plug-in for [Sketch.app](http://bohemiancoding.com/sketch/) allows to create buttons with fixed paddings no matter what text you add. 
 
+## Update 
+
+version 1.1: 
+
+- [add] Support Sketch >= 3.0.2
+- [add] Now you can use CSS shorthands (10:10, 10:10:10, 10:10:10:10)
+- [add] Feedback messages ('nothing selected', 'wrong format')
+
+Thanks [IngoValente](https://github.com/IngoValente) for CSS shorthands and all other users for appreciation.
+
+
+
 ## Demo
 
 [![Demo Video](https://dl.dropboxusercontent.com/u/1909742/sketch-plugin/thumb.png)](http://www.youtube.com/watch?v=ZJCYUCU7YxQ)
