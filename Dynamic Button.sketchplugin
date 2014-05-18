@@ -6,69 +6,91 @@ function alert(msg, title) {
   [app displayDialog:msg withTitle:title];
 }
 
-function isLayerInGroup(name,group) {
-var BGlayer;
-for (var i=0; i<groupLayers.length(); i++) {
-	var layer = groupLayers[i];
-	if ([layer name] == name) {
-			BGlayer = layer;
-		}
-	}
-return BGlayer;
+function isLayerInGroup(name, group) {
+  var BGLayer;
+  var groupLayers = [group layers];
+
+  for (var i=0; i<[groupLayers count]; i++) {
+    var layer = [groupLayers objectAtIndex:i];
+    log([layer name]);
+    if ([layer name] == name) {
+      BGLayer = layer;
+    }
+  }
+
+  return BGLayer;
 }
 
-var layer = selection[0];
-var layerHeight = [[layer frame] height];
-var layerWidth = [[layer frame] width];
-var layerX = [[layer frame] x];
-var layerY = [[layer frame] y];
-
-var splitLayer = [];
-var splitLayer = [layer name].split(':');
-
-var offsetTop,offsetRight,offsetRight,offsetLeft;
-
-if (splitLayer.length !== 4) {
-	layer.name = "0:0:0:0";
-	splitLayer = [layer name].split(':');
-}
-
-offsetTop = parseInt(splitLayer[0]);
-offsetRight = parseInt(splitLayer[1]);
-offsetBottom = parseInt(splitLayer[2]);
-offsetLeft = parseInt(splitLayer[3]);
-
-
-
-
-var parentGroup = [layer parentGroup];
-var groupLayers = [parentGroup layers];
-
-var BG = isLayerInGroup("BG",parentGroup);
-if (BG) {
-	[[BG frame] setHeight:(layerHeight + offsetTop +offsetBottom)];
-	[[BG frame] setWidth:(layerWidth + offsetLeft + offsetRight)];
-	[[BG frame] setX: 0];
-	[[BG frame] setY: 0];
-	[[layer frame] setX: offsetLeft];
-	[[layer frame] setY: offsetTop];
+if ([selection count] === 0) {
+  alert('Nothing selected', 'Error');
 }
 else {
-	var newGroup = [parentGroup addLayerOfType:'group'];
-	newGroup.name = "flex button";
+  var currentLayer = selection[0];
+  var layerHeight = [[currentLayer frame] height];
+  var layerWidth = [[currentLayer frame] width];
+  var layerX = [[currentLayer frame] x];
+  var layerY = [[currentLayer frame] y];
 
-	var newRect = [newGroup addLayerOfType:'rectangle']
-	newRect.name = "BG";
-	[[newRect frame] setHeight:layerHeight]; 
-	[[newRect frame] setWidth:layerWidth];
-	[[newRect frame] setX: layerX];
-	[[newRect frame] setY: layerY];
+  var splitLayer = [];
+  var splitLayer = [currentLayer name].split(':');
+  var offsetTop,offsetRight,offsetRight,offsetLeft;
 
-	var style = [[newRect style] fills];
-	style.addNewStylePart();
+  log(splitLayer.length);
 
-	newLayer = [layer duplicate];
-	[parentGroup removeLayer:newLayer];
-	[newGroup addLayer: newLayer];
-	[parentGroup removeLayer: layer];
+  switch(splitLayer.length) {
+    case 1: 
+      currentLayer.name = '0:0:0:0';
+      offsetTop = offsetRight = offsetBottom = offsetLeft = 0;
+      break;
+    case 2:
+      offsetTop = offsetBottom = parseInt(splitLayer[0]) || 0;
+      offsetRight = offsetLeft = parseInt(splitLayer[1]) || 0;
+      break;
+    case 3:
+      offsetTop = parseInt(splitLayer[0]) || 0;
+      offsetRight = offsetLeft = parseInt(splitLayer[1]) || 0;
+      offsetBottom = parseInt(splitLayer[2]) || 0;
+      break;
+    case 4:
+      offsetTop = parseInt(splitLayer[0]) || 0;
+      offsetRight = parseInt(splitLayer[1]) || 0;
+      offsetBottom = parseInt(splitLayer[2]) || 0;
+      offsetLeft = parseInt(splitLayer[3]) || 0;
+      break;
+    default: 
+      alert('Wrong format', 'Error');
+  }
+
+  var parentGroup = [currentLayer parentGroup];
+  var BG = isLayerInGroup('BG', parentGroup);
+  if (BG) {
+    [[BG frame] setHeight:(layerHeight + offsetTop + offsetBottom)];
+    [[BG frame] setWidth:(layerWidth + offsetLeft + offsetRight)];
+    [[BG frame] setX: 0];
+    [[BG frame] setY: 0];
+    [[currentLayer frame] setX: offsetLeft];
+    [[currentLayer frame] setY: offsetTop];
+  }
+  else {
+    var newGroup = [parentGroup addLayerOfType:'group'];
+    newGroup.name = "flex button";
+    [[newGroup frame] setHeight:(layerHeight + offsetTop + offsetBottom)];
+    [[newGroup frame] setWidth:(layerWidth + offsetLeft + offsetRight)];
+    var newRect = [newGroup addLayerOfType:'rectangle']
+    newRect.name = "BG";
+    [[newRect frame] setHeight:(layerHeight + offsetTop + offsetBottom)];
+    [[newRect frame] setWidth:(layerWidth + offsetLeft + offsetRight)];
+    [[newRect frame] setX: layerX - offsetLeft];
+    [[newRect frame] setY: layerY - offsetTop];
+
+    var style = [[newRect style] fills];
+    style.addNewStylePart();
+
+    newLayer = [currentLayer duplicate];
+    [parentGroup removeLayer:newLayer];
+    [newGroup addLayer: newLayer];
+    [parentGroup removeLayer: currentLayer];
+  }
+
+
 }
