@@ -7,7 +7,12 @@ Dynamic button plug-in for [Sketch.app](http://bohemiancoding.com/sketch/) allow
 
 ## Update 
 
-version 1.1: 
+Version 1.2:
+
+- [add] Supports Sketch 3.2
+- [add] Now you can select multiple layers to convert them to buttons / update them at once
+
+Version 1.1:
 
 - [add] Support Sketch >= 3.0.2
 - [add] Now you can use CSS shorthands (10:10, 10:10:10, 10:10:10:10)
@@ -22,7 +27,7 @@ Thanks [IngoValente](https://github.com/IngoValente) for CSS shorthands and all 
 [![Demo Video](https://dl.dropboxusercontent.com/u/1909742/sketch-plugin/thumb.png)](http://www.youtube.com/watch?v=ZJCYUCU7YxQ)
 
 ## Installation
-1. [Download Dynamyc button.sketchplugin.](https://github.com/ddwht/sketch-dynamic-button/archive/master.zip)
+1. [Download Dynamyc button.sketchplugin.](https://github.com/sketchplugins/sketch-dynamic-button/archive/master.zip)
 2. Double-click the file inside download folder. Sketch should open automatically and tell you that a new plugin was installed.
   <img src="https://dl.dropboxusercontent.com/u/1909742/sketch-plugin/success.png" alt="installed" width="534" />
 3. You should see the Dynamic button entry under the Plugins menu. 
