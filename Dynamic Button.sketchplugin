@@ -1,4 +1,8 @@
-// just a comment (cmd j)
+// Dynamic Button Plugin (cmd j)
+/*
+  Original code from https://github.com/ddwht/sketch-dynamic-button
+  Fixed for Sketch 3.2 by Bohemian Coding
+*/
 
 function alert(msg, title) {
   title = title || "alert";
@@ -6,40 +10,30 @@ function alert(msg, title) {
   [app displayDialog:msg withTitle:title];
 }
 
-function isLayerInGroup(name, group) {
-  var BGLayer;
+function getBackgroundForGroup(group) {
   var groupLayers = [group layers];
-
   for (var i=0; i<[groupLayers count]; i++) {
     var layer = [groupLayers objectAtIndex:i];
-    log([layer name]);
-    if ([layer name] == name) {
-      BGLayer = layer;
+    if ([layer name] == "BG") {
+      return layer;
     }
   }
-
-  return BGLayer;
+  return false;
 }
 
-if ([selection count] === 0) {
-  alert('Nothing selected', 'Error');
-}
-else {
-  var currentLayer = selection[0];
-  var layerHeight = [[currentLayer frame] height];
-  var layerWidth = [[currentLayer frame] width];
-  var layerX = [[currentLayer frame] x];
-  var layerY = [[currentLayer frame] y];
+function getButtonDimensionsForLayer(layer){
+  log("getButtonDimensionsForLayer: " + [layer frame])
+  var frame = [layer frame]
+  var layerHeight = [frame height],
+      layerWidth =  [frame width],
+      layerX =      [frame x],
+      layerY =      [frame y]
 
-  var splitLayer = [];
-  var splitLayer = [currentLayer name].split(':');
+  var splitLayer = [layer name].split(':');
   var offsetTop,offsetRight,offsetRight,offsetLeft;
-
-  log(splitLayer.length);
-
   switch(splitLayer.length) {
     case 1: 
-      currentLayer.name = '0:0:0:0';
+      layer.name = '0:0:0:0';
       offsetTop = offsetRight = offsetBottom = offsetLeft = 0;
       break;
     case 2:
@@ -60,37 +54,60 @@ else {
     default: 
       alert('Wrong format', 'Error');
   }
-
-  var parentGroup = [currentLayer parentGroup];
-  var BG = isLayerInGroup('BG', parentGroup);
-  if (BG) {
-    [[BG frame] setHeight:(layerHeight + offsetTop + offsetBottom)];
-    [[BG frame] setWidth:(layerWidth + offsetLeft + offsetRight)];
-    [[BG frame] setX: 0];
-    [[BG frame] setY: 0];
-    [[currentLayer frame] setX: offsetLeft];
-    [[currentLayer frame] setY: offsetTop];
+  return {
+    x: layerX,
+    y: layerY,
+    width: layerWidth,
+    height: layerHeight,
+    offsetTop: offsetTop,
+    offsetBottom: offsetBottom,
+    offsetLeft: offsetLeft,
+    offsetRight: offsetRight,
+    totalWidth: (layerWidth + offsetLeft  + offsetRight),
+    totalHeight: (layerHeight + offsetTop  + offsetBottom)
   }
-  else {
-    var newGroup = [parentGroup addLayerOfType:'group'];
-    newGroup.name = "flex button";
-    [[newGroup frame] setHeight:(layerHeight + offsetTop + offsetBottom)];
-    [[newGroup frame] setWidth:(layerWidth + offsetLeft + offsetRight)];
-    var newRect = [newGroup addLayerOfType:'rectangle']
-    newRect.name = "BG";
-    [[newRect frame] setHeight:(layerHeight + offsetTop + offsetBottom)];
-    [[newRect frame] setWidth:(layerWidth + offsetLeft + offsetRight)];
-    [[newRect frame] setX: layerX - offsetLeft];
-    [[newRect frame] setY: layerY - offsetTop];
+}
 
-    var style = [[newRect style] fills];
-    style.addNewStylePart();
+if ([selection count] === 0) {
+  alert('You need to select at least one layer', 'Selection is empty');
+} else {
+  for (var i=0; i < [selection count]; i++) {
+    var currentLayer = [selection objectAtIndex:i],
+        parentGroup = [currentLayer parentGroup];
 
-    newLayer = [currentLayer duplicate];
-    [parentGroup removeLayer:newLayer];
-    [newGroup addLayer: newLayer];
-    [parentGroup removeLayer: currentLayer];
+    var BG = getBackgroundForGroup(parentGroup),
+        buttonDimensions = getButtonDimensionsForLayer(currentLayer)
+
+    if (BG) {
+      // Update background
+      var frame = [BG frame]
+      [frame setHeight:buttonDimensions.totalHeight]
+      [frame  setWidth:buttonDimensions.totalWidth]
+      frame.x = 0
+      frame.y = 0
+    
+      currentLayer.frame().x = buttonDimensions.offsetLeft;
+      currentLayer.frame().y = buttonDimensions.offsetTop;
+    } else {
+      // Create group and background
+      var groupFrame = NSMakeRect(buttonDimensions.x, buttonDimensions.y, buttonDimensions.totalWidth, buttonDimensions.totalHeight);
+      var newGroup = [[MSLayerGroup alloc] initWithFrame:groupFrame];
+      newGroup.name = "flex button";
+      [parentGroup addLayers:[newGroup]]
+
+      var rectFrame = NSMakeRect(0,0, buttonDimensions.totalWidth, buttonDimensions.totalHeight);
+      var newRect = [[MSRectangleShape alloc] initWithFrame:rectFrame];
+      newRect.name = "BG";
+
+      var rectGroup = newRect.embedInShapeGroup();
+      var fill = rectGroup.style().fills().addNewStylePart();
+
+      currentLayer.frame().x = 0
+      currentLayer.frame().y = 0
+
+      [currentLayer removeFromParent]
+      [newGroup addLayers:[rectGroup, currentLayer]]
+
+    }
   }
-
-
 }
