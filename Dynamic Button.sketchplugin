@@ -11,7 +11,7 @@ function isLayerInGroup(name, group) {
   var groupLayers = [group layers];
 
   for (var i=0; i<[groupLayers count]; i++) {
-    var layer = [groupLayers objectAtIndex:i];
+    var layer = groupLayers.objectAtIndex(i);
     log([layer name]);
     if ([layer name] == name) {
       BGLayer = layer;
@@ -38,7 +38,7 @@ else {
   log(splitLayer.length);
 
   switch(splitLayer.length) {
-    case 1: 
+    case 1:
       currentLayer.name = '0:0:0:0';
       offsetTop = offsetRight = offsetBottom = offsetLeft = 0;
       break;
@@ -57,7 +57,7 @@ else {
       offsetBottom = parseInt(splitLayer[2]) || 0;
       offsetLeft = parseInt(splitLayer[3]) || 0;
       break;
-    default: 
+    default:
       alert('Wrong format', 'Error');
   }
 
@@ -76,19 +76,22 @@ else {
     newGroup.name = "flex button";
     [[newGroup frame] setHeight:(layerHeight + offsetTop + offsetBottom)];
     [[newGroup frame] setWidth:(layerWidth + offsetLeft + offsetRight)];
-    var newRect = [newGroup addLayerOfType:'rectangle']
-    newRect.name = "BG";
-    [[newRect frame] setHeight:(layerHeight + offsetTop + offsetBottom)];
-    [[newRect frame] setWidth:(layerWidth + offsetLeft + offsetRight)];
-    [[newRect frame] setX: layerX - offsetLeft];
-    [[newRect frame] setY: layerY - offsetTop];
 
-    var style = [[newRect style] fills];
-    style.addNewStylePart();
+    var newRect = [newGroup addLayerOfType:'rectangle']
+    var x = layerX - offsetLeft;
+    var y = layerY - offsetTop;
+    var width = (layerWidth + offsetLeft + offsetRight);
+    var height = (layerHeight + offsetTop + offsetBottom)
+
+    newRect.frame = MSRect.rectWithRect(NSMakeRect(x, y, width, height))
+    newRect.name = "BG";
+
+    var newRect = newRect.embedInShapeGroup();
+    var fill = newRect.style().fills().addNewStylePart();
 
     newLayer = [currentLayer duplicate];
     [parentGroup removeLayer:newLayer];
-    [newGroup addLayer: newLayer];
+    newGroup.addLayers([newLayer]);
     [parentGroup removeLayer: currentLayer];
   }
 
