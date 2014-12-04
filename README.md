@@ -3,8 +3,8 @@
 Dynamic button plug-in for [Sketch.app](http://bohemiancoding.com/sketch/) allows to create buttons with fixed paddings no matter what text you add. 
 
 ## Update 
-[SOON]Version 2.0
-  [add] Some new attractive features 
+[SOON] Version 2.0
+- [add] Some new attractive features 
   
 Version 1.2:
 
