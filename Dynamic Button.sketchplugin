@@ -87,8 +87,7 @@ else {
     newRect.name = "BG";
 
     var newRect = newRect.embedInShapeGroup();
-    var fill = newRect.style().fills().addNewStylePart()
-    fill.color = MSColor.colorWithSVGString("#ff0000");
+    var fill = newRect.style().fills().addNewStylePart();
 
     newLayer = [currentLayer duplicate];
     [parentGroup removeLayer:newLayer];
