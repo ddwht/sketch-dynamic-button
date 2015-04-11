@@ -90,24 +90,31 @@ if ([selection count] === 0) {
       currentLayer.frame().y = buttonDimensions.offsetTop;
     } else {
       // Create group and background
-      var groupFrame = NSMakeRect(buttonDimensions.x, buttonDimensions.y, buttonDimensions.totalWidth, buttonDimensions.totalHeight);
-      var newGroup = [[MSLayerGroup alloc] initWithFrame:groupFrame];
-      newGroup.name = "flex button";
-      [parentGroup addLayers:[newGroup]]
 
-      var rectFrame = NSMakeRect(0,0, buttonDimensions.totalWidth, buttonDimensions.totalHeight);
-      var newRect = [[MSRectangleShape alloc] initWithFrame:rectFrame];
-      newRect.name = "BG";
 
-      var rectGroup = newRect.embedInShapeGroup();
-      var fill = rectGroup.style().fills().addNewStylePart();
+      var group = MSLayerGroup.new();
+      var groupFrame = group.frame();
+      groupFrame.setConstrainProportions(false);
+      group.setName('Dynamic group');
 
-      currentLayer.frame().x = 0
-      currentLayer.frame().y = 0
+      parentGroup.addLayers([group]);
+      parentGroup.removeLayer(currentLayer);
+      group.addLayers([currentLayer]);
+      
 
-      [currentLayer removeFromParent]
-      [newGroup addLayers:[rectGroup, currentLayer]]
-
+      var BGLayer = parentGroup.addLayerOfType('rectangle');
+      var BGframe = BGLayer.frame();
+      BGframe.setWidth(currentLayer.frame().width());
+      BGframe.setHeight(currentLayer.frame().height());
+      BGframe.setX(currentLayer.frame().x());
+      BGframe.setY(currentLayer.frame().y());
+      BGLayer.name = "BG";
+      BGLayer.style().fills().addNewStylePart();
+      BGLayer.select_byExpandingSelection_(true,false);
+      parentGroup.removeLayer(BGLayer);
+      group.addLayers([BGLayer]);
+      [[doc actionWithName:"MSMoveToBackAction"] performAction:nil];
+      group.resizeRoot();
     }
   }
 }
