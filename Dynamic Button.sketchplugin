@@ -4,6 +4,19 @@
   Fixed for Sketch 3.2 by Bohemian Coding
 */
 
+function addLayerOfRectType(parent,rect) {
+    var style = MSDefaultStyle.defaultStyle();
+    var rectShape=MSRectangleShape.alloc().init();
+    rectShape.frame = MSRect.rectWithRect(rect);
+    var container=MSShapeGroup.alloc().init();
+    container.addLayers([rectShape]);
+    var fill = container.style().fills().addNewStylePart();
+    fill.color = MSColor.colorWithSVGString("#ddd");
+    container.resizeRoot(true);
+    parent.addLayers([container]);
+    return container;
+}
+
 function alert(msg, title) {
   title = title || "alert";
   var app = [NSApplication sharedApplication];
@@ -68,6 +81,12 @@ function getButtonDimensionsForLayer(layer){
   }
 }
 
+var selection = context.selection;
+// for (var i=0; i < context.selection.length(); i++) {
+//   context.selection[i].setIsSelected(false);
+// }
+var doc = context.document;
+
 if ([selection count] === 0) {
   alert('You need to select at least one layer', 'Selection is empty');
 } else {
@@ -101,20 +120,18 @@ if ([selection count] === 0) {
       parentGroup.removeLayer(currentLayer);
       group.addLayers([currentLayer]);
       
-
-      var BGLayer = parentGroup.addLayerOfType('rectangle');
-      var BGframe = BGLayer.frame();
-      BGframe.setWidth(currentLayer.frame().width());
-      BGframe.setHeight(currentLayer.frame().height());
-      BGframe.setX(currentLayer.frame().x());
-      BGframe.setY(currentLayer.frame().y());
+      // var size = NSMakeRect(currentLayer.frame().x(),
+      //                           currentLayer.frame().y(),
+      //                           currentLayer.frame().width().
+      //                           currentLayer.frame().height());
+      var BGLayer = addLayerOfRectType(group, currentLayer.rect());
+      log(BGLayer);
       BGLayer.name = "BG";
-      BGLayer.style().fills().addNewStylePart();
-      BGLayer.select_byExpandingSelection_(true,false);
-      parentGroup.removeLayer(BGLayer);
-      group.addLayers([BGLayer]);
-      [[doc actionWithName:"MSMoveToBackAction"] performAction:nil];
-      group.resizeRoot();
+      currentLayer.setIsSelected(false);
+      BGLayer.setIsSelected(true);
+      [[doc actionWithName:"MSMoveBackwardAction"] performAction:nil]
+      BGLayer.setIsSelected(false);
+      group.resizeRoot(true);
     }
   }
 }
