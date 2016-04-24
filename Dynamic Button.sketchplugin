@@ -6,13 +6,11 @@
 
 function addLayerOfRectType(parent,rect) {
     var style = MSDefaultStyle.defaultStyle();
-    var rectShape=MSRectangleShape.alloc().init();
+    var rectShape = MSRectangleShape.alloc().init();
     rectShape.frame = MSRect.rectWithRect(rect);
-    var container=MSShapeGroup.alloc().init();
-    container.addLayers([rectShape]);
+    var container = MSShapeGroup.shapeWithPath(rectShape);
     var fill = container.style().fills().addNewStylePart();
     fill.color = MSColor.colorWithSVGString("#ddd");
-    container.resizeRoot(true);
     parent.addLayers([container]);
     return container;
 }
@@ -131,7 +129,6 @@ if ([selection count] === 0) {
       BGLayer.setIsSelected(true);
       [[doc actionWithName:"MSMoveBackwardAction"] performAction:nil]
       BGLayer.setIsSelected(false);
-      group.resizeRoot(true);
     }
   }
 }
