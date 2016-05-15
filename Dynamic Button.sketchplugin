@@ -40,7 +40,8 @@ function getButtonDimensionsForLayer(layer){
       layerX =      [frame x],
       layerY =      [frame y]
 
-  var splitLayer = [layer name].split(':');
+  var inputPaddings = doc.askForUserInput_initialValue("Please input the paddings of the button", "12:20");
+  var splitLayer = inputPaddings.split(":");
   var offsetTop,offsetRight,offsetRight,offsetLeft;
   switch(splitLayer.length) {
     case 1: 
