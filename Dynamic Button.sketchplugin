@@ -25,7 +25,7 @@ function getBackgroundForGroup(group) {
   var groupLayers = [group layers];
   for (var i=0; i<[groupLayers count]; i++) {
     var layer = [groupLayers objectAtIndex:i];
-    if ([layer name] == "BG") {
+    if (layer.name().toLowerCase() == "bg") {
       return layer;
     }
   }
