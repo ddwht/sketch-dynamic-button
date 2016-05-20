@@ -34,7 +34,7 @@ var onRun = function(context) {
         return false;
     }
 
-    function getButtonDimensionsForLayer(layer) {
+    function getButtonDimensionsForLayer(layer, inputPaddings) {
         log("getButtonDimensionsForLayer: " + [layer frame])
         var frame = [layer frame]
         var layerHeight = [frame height],
@@ -42,28 +42,26 @@ var onRun = function(context) {
             layerX = [frame x],
             layerY = [frame y]
 
-        var inputPaddings = doc.askForUserInput_initialValue("Please input the paddings of the button", "12:20");
-        var splitLayer = inputPaddings.split(":");
         var offsetTop, offsetRight, offsetRight, offsetLeft;
-        switch (splitLayer.length) {
+        switch (inputPaddings.length) {
             case 1:
                 layer.name = '0:0:0:0';
                 offsetTop = offsetRight = offsetBottom = offsetLeft = 0;
                 break;
             case 2:
-                offsetTop = offsetBottom = parseInt(splitLayer[0]) || 0;
-                offsetRight = offsetLeft = parseInt(splitLayer[1]) || 0;
+                offsetTop = offsetBottom = parseInt(inputPaddings[0]) || 0;
+                offsetRight = offsetLeft = parseInt(inputPaddings[1]) || 0;
                 break;
             case 3:
-                offsetTop = parseInt(splitLayer[0]) || 0;
-                offsetRight = offsetLeft = parseInt(splitLayer[1]) || 0;
-                offsetBottom = parseInt(splitLayer[2]) || 0;
+                offsetTop = parseInt(inputPaddings[0]) || 0;
+                offsetRight = offsetLeft = parseInt(inputPaddings[1]) || 0;
+                offsetBottom = parseInt(inputPaddings[2]) || 0;
                 break;
             case 4:
-                offsetTop = parseInt(splitLayer[0]) || 0;
-                offsetRight = parseInt(splitLayer[1]) || 0;
-                offsetBottom = parseInt(splitLayer[2]) || 0;
-                offsetLeft = parseInt(splitLayer[3]) || 0;
+                offsetTop = parseInt(inputPaddings[0]) || 0;
+                offsetRight = parseInt(inputPaddings[1]) || 0;
+                offsetBottom = parseInt(inputPaddings[2]) || 0;
+                offsetLeft = parseInt(inputPaddings[3]) || 0;
                 break;
             default:
                 alert('Wrong format', 'Error');
@@ -91,12 +89,14 @@ var onRun = function(context) {
     if ([selection count] === 0) {
         alert('You need to select at least one layer', 'Selection is empty');
     } else {
+        var inputPaddings = doc.askForUserInput_initialValue("Please input the paddings of the button", "12:20").split(":");
+
         for (var i = 0; i < [selection count]; i++) {
             var currentLayer = [selection objectAtIndex: i],
                 parentGroup = [currentLayer parentGroup];
 
             var BG = getBackgroundForGroup(parentGroup),
-                buttonDimensions = getButtonDimensionsForLayer(currentLayer)
+                buttonDimensions = getButtonDimensionsForLayer(currentLayer, inputPaddings);
 
             if (BG) {
                 // Update background
