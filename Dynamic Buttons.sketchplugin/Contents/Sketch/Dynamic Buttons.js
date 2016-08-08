@@ -11,7 +11,7 @@ var onRun = function(context) {
         var rectShape = MSRectangleShape.alloc().init();
         rectShape.frame = MSRect.rectWithRect(rect);
         var container = MSShapeGroup.shapeWithPath(rectShape);
-        var fill = container.style().fills().addNewStylePart();
+        var fill = container.style().addStylePartOfType(0);
         fill.color = MSColor.colorWithSVGString("#ddd");
         parent.addLayers([container]);
         return container;
@@ -91,27 +91,21 @@ var onRun = function(context) {
     } else {
         var inputPaddings = doc.askForUserInput_initialValue("Please input the paddings of the button", "12:20").split(":");
 
+        // de-select all the selected layer at first
+        for (var i = 0; i < [selection count]; i++) {
+            var currentLayer = [selection objectAtIndex: i];
+            currentLayer.setIsSelected(false);
+        }
+
         for (var i = 0; i < [selection count]; i++) {
             var currentLayer = [selection objectAtIndex: i],
                 parentGroup = [currentLayer parentGroup];
 
-            var BG = getBackgroundForGroup(parentGroup),
+            var bg = getBackgroundForGroup(parentGroup),
                 buttonDimensions = getButtonDimensionsForLayer(currentLayer, inputPaddings);
 
-            if (BG) {
-                // Update background
-                var frame = [BG frame]
-                    [frame setHeight: buttonDimensions.totalHeight]
-                    [frame setWidth: buttonDimensions.totalWidth]
-                frame.x = 0
-                frame.y = 0
-
-                currentLayer.frame().x = buttonDimensions.offsetLeft;
-                currentLayer.frame().y = buttonDimensions.offsetTop;
-            } else {
+            if(!bg) {
                 // Create group and background
-
-
                 var group = MSLayerGroup.new();
                 var groupFrame = group.frame();
                 groupFrame.setConstrainProportions(false);
@@ -120,19 +114,33 @@ var onRun = function(context) {
                 parentGroup.addLayers([group]);
                 parentGroup.removeLayer(currentLayer);
                 group.addLayers([currentLayer]);
+                group.resizeToFitChildrenWithOption(0);
 
-                // var size = NSMakeRect(currentLayer.frame().x(),
-                //                           currentLayer.frame().y(),
-                //                           currentLayer.frame().width().
-                //                           currentLayer.frame().height());
                 var BGLayer = addLayerOfRectType(group, currentLayer.rect());
                 log(BGLayer);
                 BGLayer.name = "BG";
-                currentLayer.setIsSelected(false);
                 BGLayer.setIsSelected(true);
-                [[doc actionWithName:"MSMoveBackwardAction"] performAction:nil]
+                [NSApp sendAction: 'moveBackward:' to: nil from: doc];
                 BGLayer.setIsSelected(false);
+
+                bg = BGLayer;
             }
+
+            // Update background
+            var frame = [bg frame];
+            [frame setHeight: buttonDimensions.totalHeight];
+            [frame setWidth: buttonDimensions.totalWidth];
+            frame.x = 0;
+            frame.y = 0;
+
+            currentLayer.frame().x = buttonDimensions.offsetLeft;
+            currentLayer.frame().y = buttonDimensions.offsetTop;
+        }
+
+        // re-select the previous selected layers
+        for (var i = 0; i < [selection count]; i++) {
+            var currentLayer = [selection objectAtIndex: i];
+            currentLayer.setIsSelected(true);
         }
     }
 };
