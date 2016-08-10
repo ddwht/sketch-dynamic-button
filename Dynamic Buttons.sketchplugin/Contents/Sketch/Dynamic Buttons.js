@@ -5,6 +5,7 @@
 */
 
 var onRun = function(context) {
+    var dataKey = 'buttonPaddings';
 
     function addLayerOfRectType(parent, rect) {
         var style = MSDefaultStyle.defaultStyle();
@@ -35,14 +36,13 @@ var onRun = function(context) {
     }
 
     function getButtonDimensionsForLayer(layer, inputPaddings) {
-        log("getButtonDimensionsForLayer: " + [layer frame])
-        var frame = [layer frame]
+        var frame = [layer frame];
         var layerHeight = [frame height],
             layerWidth = [frame width],
             layerX = [frame x],
-            layerY = [frame y]
+            layerY = [frame y];
 
-        var offsetTop, offsetRight, offsetRight, offsetLeft;
+        var offsetTop, offsetBottom, offsetRight, offsetLeft;
         switch (inputPaddings.length) {
             case 1:
                 layer.name = '0:0:0:0';
@@ -80,6 +80,48 @@ var onRun = function(context) {
         }
     }
 
+    function loadJSONData(context, path) {
+        // load contents
+        var contents = [NSString stringWithContentsOfFile: path encoding: NSUTF8StringEncoding error: false];
+
+        // get data from JSON
+        var data;
+        try {
+            data = JSON.parse(contents);
+        }
+        catch(e) {
+            context.document.showMessage("There was an error parsing data. Please make sure it's valid.");
+            return;
+        }
+
+        return data;
+    }
+
+    function getData(context, key) {
+        var fileURL = context.plugin.urlForResourceNamed('data.json');
+        var filePath = fileURL.path();
+        var jsonData = loadJSONData(context, filePath);
+
+        return jsonData[key];
+    }
+
+    function saveData(context, key, value) {
+        var fileURL = context.plugin.urlForResourceNamed('data.json');
+        var filePath = fileURL.path();
+        var jsonData = loadJSONData(context, filePath);
+
+        jsonData[key] = value + ""; // convert NSTaggedPointerString to Javascript string, otherwise the "value" will not serialize correctly.
+
+        try {
+            var nsstr = [@"" stringByAppendingString: JSON.stringify(jsonData)]; // convert to NSString
+            nsstr.dataUsingEncoding_(NSUTF8StringEncoding).writeToFile_atomically_(filePath, true);
+        }
+        catch(e) {
+            context.document.showMessage("There was an error parsing data. Please make sure it's valid.");
+            return;
+        }
+    }
+
     var selection = context.selection;
     // for (var i=0; i < context.selection.length(); i++) {
     //   context.selection[i].setIsSelected(false);
@@ -89,7 +131,10 @@ var onRun = function(context) {
     if ([selection count] === 0) {
         alert('You need to select at least one layer', 'Selection is empty');
     } else {
-        var inputPaddings = doc.askForUserInput_initialValue("Please input the paddings of the button", "12:20").split(":");
+        var previousPaddings = getData(context, dataKey);
+        var inputPaddingsStr = doc.askForUserInput_initialValue("Please input the paddings of the button", previousPaddings);
+
+        var inputPaddings = inputPaddingsStr.split(":");
 
         // de-select all the selected layer at first
         for (var i = 0; i < [selection count]; i++) {
@@ -117,7 +162,6 @@ var onRun = function(context) {
                 group.resizeToFitChildrenWithOption(0);
 
                 var BGLayer = addLayerOfRectType(group, currentLayer.rect());
-                log(BGLayer);
                 BGLayer.name = "BG";
                 BGLayer.setIsSelected(true);
                 [NSApp sendAction: 'moveBackward:' to: nil from: doc];
@@ -142,5 +186,7 @@ var onRun = function(context) {
             var currentLayer = [selection objectAtIndex: i];
             currentLayer.setIsSelected(true);
         }
+
+        saveData(context, dataKey, inputPaddingsStr);
     }
 };
