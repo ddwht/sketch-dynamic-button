@@ -1,0 +1,25 @@
+{
+  "author" : "",
+  "commands" : [
+    {
+      "script" : "Dynamic Buttons.js",
+      "name" : "Dynamic Buttons",
+      "handlers" : {
+        "run" : "onRun"
+      },
+      "shortcut" : "cmd j",
+      "identifier" : "dynamicButtons"
+    }
+  ],
+  "menu" : {
+    "items" : [
+      "dynamicButtons"
+    ],
+    "title" : "Dynamic Buttons"
+  },
+  "identifier" : "dynamic-buttons",
+  "version" : "1.0",
+  "description" : "",
+  "authorEmail" : "",
+  "name" : "Dynamic Buttons"
+}
